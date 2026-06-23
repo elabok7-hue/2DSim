@@ -1,7 +1,7 @@
 import time
 
-ALIVE: int = 1
-DEAD: int = 0
+ALIVE: str = "0"
+DEAD: str = "."
 
 def init_board(rows, cols):
     board = []
@@ -11,10 +11,6 @@ def init_board(rows, cols):
         for col in range(cols):
             curr_row.append(DEAD)
         board.append(curr_row)
-
-    board[2][3] = ALIVE
-    board[2][4] = ALIVE
-    board[2][5] = ALIVE
 
     return board
 
@@ -65,22 +61,22 @@ def print_board(board: list):
         print()
     print()
 
-def check_all_dead(board: list):
-    for row in range(len(board)):
-        for col in range(len(board[row])):
-            if board[row][col] == ALIVE:
-                return False
-    return True
-
 def main():
-    count = 0
-    board = init_board(5, 6)
+    board = init_board(10, 10)
 
-    while not check_all_dead(board):
+    board[3][3] = ALIVE
+    board[4][4] = ALIVE
+    board[5][4] = ALIVE
+    board[5][3] = ALIVE
+    board[5][2] = ALIVE
+
+    steps_counter = 0
+    while steps_counter != 15:
         print_board(board)
         board = update_board(board)
-        count +=1
         time.sleep(0.5)
+        steps_counter += 1
+
     print_board(board)
 
 main()
