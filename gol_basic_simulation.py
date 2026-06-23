@@ -7,21 +7,20 @@ def init_board(rows, cols):
     board = []
 
     for row in range(rows):
-        row = []
+        curr_row = []
         for col in range(cols):
-            row.append(DEAD)
-        board.append(row)
+            curr_row.append(DEAD)
+        board.append(curr_row)
 
-    board[0][2] = ALIVE
-    board[0][3] = ALIVE
-    board[0][1] = ALIVE
-
-    print_board(board)
+    board[2][3] = ALIVE
+    board[2][4] = ALIVE
+    board[2][5] = ALIVE
 
     return board
 
 def count_neighbour_live_cells(board: list, row: int, col: int) -> int:
     alive_counter : int = 0
+
     for check_row in range(row - 1, row + 2):
         if 0 <= check_row < len(board):
             for check_col in range(col - 1, col + 2):
@@ -41,6 +40,7 @@ def find_new_cell_status(cell: int, neighbours: int):
         cell = DEAD
     elif neighbours == 3:
         cell = ALIVE
+
     return cell
 
 
@@ -65,13 +65,22 @@ def print_board(board: list):
         print()
     print()
 
+def check_all_dead(board: list):
+    for row in range(len(board)):
+        for col in range(len(board[row])):
+            if board[row][col] == ALIVE:
+                return False
+    return True
+
 def main():
     count = 0
     board = init_board(5, 6)
-    while count != 8:
-        board = update_board(board)
+
+    while not check_all_dead(board):
         print_board(board)
+        board = update_board(board)
         count +=1
-        time.sleep(1)
+        time.sleep(0.5)
+    print_board(board)
 
 main()
