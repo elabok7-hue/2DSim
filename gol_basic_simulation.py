@@ -15,7 +15,7 @@ def init_board(rows, cols):
     return board
 
 def count_neighbour_live_cells(board: list, row: int, col: int):
-    alive_counter : int = 0
+    alive_counter = 0
 
     for check_row in range(row - 1, row + 2):
         if 0 <= check_row < len(board):
@@ -46,7 +46,7 @@ def update_board(board: list):
     for row in range(len(board)):
         temp_row = []
         for col in range(len(board[row])):
-            neighbours: int = count_neighbour_live_cells(board, row, col)
+            neighbours = count_neighbour_live_cells(board, row, col)
             status = find_new_cell_status(board[row][col], neighbours)
             temp_row.append(status)
         temp_board.append(temp_row)
