@@ -1,7 +1,7 @@
 import time
 
-ALIVE: str = "0"
-DEAD: str = "."
+ALIVE = "0"
+DEAD = "."
 
 def init_board(rows, cols):
     board = []
@@ -14,7 +14,7 @@ def init_board(rows, cols):
 
     return board
 
-def count_neighbour_live_cells(board: list, row: int, col: int) -> int:
+def count_neighbour_live_cells(board: list, row: int, col: int):
     alive_counter : int = 0
 
     for check_row in range(row - 1, row + 2):
@@ -29,7 +29,7 @@ def count_neighbour_live_cells(board: list, row: int, col: int) -> int:
 
     return alive_counter
 
-def find_new_cell_status(cell: int, neighbours: int):
+def find_new_cell_status(cell: str, neighbours: int):
     if neighbours <= 1:
         cell = DEAD
     elif neighbours >= 4:
@@ -71,6 +71,7 @@ def main():
     board[5][2] = ALIVE
 
     steps_counter = 0
+
     while steps_counter != 15:
         print_board(board)
         board = update_board(board)
