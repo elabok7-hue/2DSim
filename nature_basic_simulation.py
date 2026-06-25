@@ -104,40 +104,36 @@ def herbivore_step(curr_herbivore: Herbivore, board: list):
 
     if curr_herbivore.is_dead():
         remove_from_board(curr_herbivore, board)
-        return
-
-    old_row, old_col = curr_herbivore.row, curr_herbivore.col
-
-    if curr_herbivore.can_reproduce():
-        partner = curr_herbivore.find_nearest_herbivore(board)
-
-        if (
-                partner is not None
-                and abs(partner.row - curr_herbivore.row) <= 1
-                and abs(partner.col - curr_herbivore.col) <= 1
-        ):
-            baby = curr_herbivore.reproduce(board)
-
-            if baby:
-                board[baby.row][baby.col] = baby
-
-            curr_herbivore.cooldown_timer = curr_herbivore.t_cooldown
-            partner.cooldown_timer = partner.t_cooldown
-            return
-
-    nearest_plant = curr_herbivore.find_nearest_plant(board)
-    if nearest_plant is None:
-        curr_herbivore.move_randomly(board)
     else:
-        curr_herbivore.move_towards_plant(nearest_plant)
 
-    move_entity_on_board(curr_herbivore, old_row, old_col, board)
-    target = board[curr_herbivore.row][curr_herbivore.col]
+        old_row, old_col = curr_herbivore.row, curr_herbivore.col
 
-    if isinstance(target, Plant) and target is not curr_herbivore:
-        remove_from_board(target, board)
-        curr_herbivore.refuel_life_span()
-    board[curr_herbivore.row][curr_herbivore.col] = curr_herbivore
+        if curr_herbivore.can_reproduce():
+            partner = curr_herbivore.find_nearest_herbivore(board)
+
+            if partner is not None:
+                baby = curr_herbivore.reproduce(board)
+
+                if baby:
+                    board[baby.row][baby.col] = baby
+
+                curr_herbivore.cooldown_timer = curr_herbivore.t_cooldown
+                partner.cooldown_timer = partner.t_cooldown
+                return
+
+        nearest_plant = curr_herbivore.find_nearest_plant(board)
+        if nearest_plant is None:
+            curr_herbivore.move_randomly(board)
+        else:
+            curr_herbivore.move_towards_plant(nearest_plant)
+
+        move_entity_on_board(curr_herbivore, old_row, old_col, board)
+        target = board[curr_herbivore.row][curr_herbivore.col]
+
+        if isinstance(target, Plant) and target is not curr_herbivore:
+            remove_from_board(target, board)
+            curr_herbivore.refuel_life_span()
+        board[curr_herbivore.row][curr_herbivore.col] = curr_herbivore
 
 
 def predator_step(curr_predator: Predator, board: list):
@@ -146,27 +142,27 @@ def predator_step(curr_predator: Predator, board: list):
 
     if curr_predator.is_dead():
         remove_from_board(curr_predator, board)
-        return
-
-    old_row, old_col = curr_predator.row, curr_predator.col
-
-    nearest_herbivore = curr_predator.find_nearest_herbivore(board)
-    if nearest_herbivore is None:
-        curr_predator.move_randomly(board)
     else:
-        curr_predator.move_towards_herbivore(nearest_herbivore)
 
-    move_entity_on_board(curr_predator, old_row, old_col, board)
+        old_row, old_col = curr_predator.row, curr_predator.col
 
-    target = board[curr_predator.row][curr_predator.col]
+        nearest_herbivore = curr_predator.find_nearest_herbivore(board)
+        if nearest_herbivore is None:
+            curr_predator.move_randomly(board)
+        else:
+            curr_predator.move_towards_herbivore(nearest_herbivore)
 
-    if isinstance(target, Herbivore):
-        remove_from_board(target, board)
-        curr_predator.refuel_life_span()
-    elif isinstance(target, Plant):
-        remove_from_board(target, board)
+        move_entity_on_board(curr_predator, old_row, old_col, board)
 
-    board[curr_predator.row][curr_predator.col] = curr_predator
+        target = board[curr_predator.row][curr_predator.col]
+
+        if isinstance(target, Herbivore):
+            remove_from_board(target, board)
+            curr_predator.refuel_life_span()
+        elif isinstance(target, Plant):
+            remove_from_board(target, board)
+
+        board[curr_predator.row][curr_predator.col] = curr_predator
 
 
 def spawn_random_plant(board : list):
