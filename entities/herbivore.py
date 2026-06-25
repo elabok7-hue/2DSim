@@ -47,6 +47,7 @@ class Herbivore:
         return None
 
     def is_dead(self):
+        """Return if the herbivore is dead."""
         return self.age >= self.t_herbivore
 
     def move_towards(self, target):
