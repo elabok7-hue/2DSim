@@ -1,0 +1,6 @@
+T_plant: 15
+T_herbivore: 15
+R_herbivore_sight: 2
+T_cooldown: 10
+T_predator: 10
+R_predator_sight: 2
