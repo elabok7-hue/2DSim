@@ -7,7 +7,9 @@ class Plant:
         self.col = col
 
     def increase_age(self):
+        """Increase age"""
         self.age += 1
 
     def is_dead(self):
+        """Check if plant is dead"""
         return self.age >= self.t_plant

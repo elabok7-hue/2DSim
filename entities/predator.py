@@ -44,6 +44,7 @@ class Predator:
         return self.age >= self.t_predator
 
     def refuel_life_span(self):
+        """Refuel the life span of the predator"""
         self.age = 0
 
     def move_randomly(self, board: list):

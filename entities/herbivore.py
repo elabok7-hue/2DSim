@@ -14,6 +14,7 @@ class Herbivore:
         self.cooldown_timer = 0  # tracks reproduction cooldown
 
     def increase_age(self):
+        """Check if herbivore is dead"""
         self.age += 1
         if self.cooldown_timer > 0:
             self.cooldown_timer -= 1
