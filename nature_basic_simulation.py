@@ -2,7 +2,7 @@ import random
 import time
 
 import yaml
-from entities import Herbivore, Plant, Predator, Rock
+from entities import Herbivore, Plant, Predator
 
 plant_sign = "🍀"
 herbivore_sign = "🐔"
@@ -47,7 +47,7 @@ def init_board():
                 board_row.append(Predator(row, col_index))
                 col_index += 1
             elif cell == rock_sign:
-                board_row.append(Rock(row, col_index))
+                board_row.append(rock_sign)
                 col_index += 1
             elif cell == ground:
                 board_row.append(None)
@@ -62,13 +62,13 @@ def print_board(board: list):
     for row in board:
         for cell in row:
             if isinstance(cell, Plant):
-                print("🍀", end="")
+                print(plant_sign, end="")
             elif isinstance(cell, Herbivore):
-                print("🐔", end="")
+                print(herbivore_sign, end="")
             elif isinstance(cell, Predator):
-                print("🐺", end="")
-            elif isinstance(cell, Rock):
-                print("🪨", end="")
+                print(predator_sign, end="")
+            elif cell == rock_sign:
+                print(rock_sign, end="")
             else:
                 print("🟫", end="")
         print()
