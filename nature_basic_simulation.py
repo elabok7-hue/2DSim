@@ -1,7 +1,7 @@
 import random
 import time
-
 import yaml
+
 from entities import Herbivore, Plant, Predator
 
 plant_sign = "🍀"
@@ -94,7 +94,7 @@ def remove_from_board(entity, board: list):
 def plant_step(curr_plant: Plant, board: list):
     """Implements plant functionality."""
     curr_plant.increase_age()
-    if curr_plant.is_dead():
+    if curr_plant.is_dead(Plant.t_plant):
         remove_from_board(curr_plant, board)
 
 
@@ -102,14 +102,14 @@ def herbivore_step(curr_herbivore: Herbivore, board: list):
     """Implements herbivore functionality."""
     curr_herbivore.increase_age()
 
-    if curr_herbivore.is_dead():
+    if curr_herbivore.is_dead(Herbivore.t_herbivore):
         remove_from_board(curr_herbivore, board)
     else:
 
         old_row, old_col = curr_herbivore.row, curr_herbivore.col
 
         if curr_herbivore.can_reproduce():
-            partner = curr_herbivore.find_nearest_herbivore(board)
+            partner = curr_herbivore.find_nearest_needed_entity(board, Herbivore, Herbivore.r_herbivore_sight)
 
             if partner is not None:
                 baby = curr_herbivore.reproduce(board)
@@ -121,11 +121,11 @@ def herbivore_step(curr_herbivore: Herbivore, board: list):
                 partner.cooldown_timer = partner.t_cooldown
                 return
 
-        nearest_plant = curr_herbivore.find_nearest_plant(board)
+        nearest_plant = curr_herbivore.find_nearest_needed_entity(board, Herbivore, Herbivore.r_herbivore_sight)
         if nearest_plant is None:
             curr_herbivore.move_randomly(board)
         else:
-            curr_herbivore.move_towards_plant(nearest_plant)
+            curr_herbivore.move_towards_entity(nearest_plant)
 
         move_entity_on_board(curr_herbivore, old_row, old_col, board)
         target = board[curr_herbivore.row][curr_herbivore.col]
@@ -140,17 +140,17 @@ def predator_step(curr_predator: Predator, board: list):
     """Implemets predator functionality."""
     curr_predator.increase_age()
 
-    if curr_predator.is_dead():
+    if curr_predator.is_dead(Predator.t_predator):
         remove_from_board(curr_predator, board)
     else:
 
         old_row, old_col = curr_predator.row, curr_predator.col
 
-        nearest_herbivore = curr_predator.find_nearest_herbivore(board)
+        nearest_herbivore = curr_predator.find_nearest_needed_entity(board, Herbivore, Herbivore.r_herbivore_sight)
         if nearest_herbivore is None:
             curr_predator.move_randomly(board)
         else:
-            curr_predator.move_towards_herbivore(nearest_herbivore)
+            curr_predator.move_towards_entity(nearest_herbivore)
 
         move_entity_on_board(curr_predator, old_row, old_col, board)
 
