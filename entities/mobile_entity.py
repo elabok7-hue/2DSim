@@ -14,7 +14,7 @@ class MobileEntity(Entity):
             for check_row in range(self.row - check_sight, self.row + check_sight + 1):
                 if 0 <= check_row < len(board):
                     for check_col in range(self.col - check_sight, self.col + check_sight + 1):
-                        if 0 <= check_col < len(board[check_row]):
+                        if 0 <= check_col < len(board[check_row]) and self.row != check_row and self.col != check_col:
                             entity = board[check_row][check_col]
 
                             if isinstance(entity, needed_entity):

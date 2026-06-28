@@ -1,4 +1,6 @@
 import random
+
+from entities import Plant
 from entities.mobile_entity import MobileEntity
 
 
@@ -36,3 +38,41 @@ class Herbivore(MobileEntity):
             return baby
 
         return None
+
+    def herbivore_step(self, board: list):
+        """Implements herbivore functionality."""
+        self.increase_age()
+
+        if self.is_dead(Herbivore.t_herbivore):
+            self.remove_from_board(board)
+        else:
+
+            old_row, old_col = self.row, self.col
+
+            if self.can_reproduce():
+                partner = self.find_nearest_needed_entity(board, Herbivore, 1)
+
+                if partner is not None:
+                    baby = self.reproduce(board)
+
+                    if baby:
+                        board[baby.row][baby.col] = baby
+
+                    self.cooldown_timer = self.t_cooldown
+                    partner.cooldown_timer = partner.t_cooldown
+                    return
+
+            nearest_plant = self.find_nearest_needed_entity(board, Plant, Herbivore.r_herbivore_sight)
+            if nearest_plant is None:
+                self.move_randomly(board)
+            else:
+                self.move_towards_entity(nearest_plant)
+
+            self.move_entity_on_board(old_row, old_col, board)
+            target = board[self.row][self.col]
+
+            if isinstance(target, Plant) and target is not self:
+                target.remove_from_board(board)
+                self.refuel_life_span()
+            board[self.row][self.col] = self
+
