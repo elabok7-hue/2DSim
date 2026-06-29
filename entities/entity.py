@@ -10,6 +10,7 @@ class Entity(ABC):
         self.age = 0
 
     def print_entity(self):
+        """Print the entity."""
         print(self.SIGN, end="")
 
     def increase_age(self):
@@ -34,4 +35,3 @@ class Entity(ABC):
 
         if 0 <= self.row < len(board) and 0 <= self.col < len(board[0]):
             board[self.row][self.col] = self
-
