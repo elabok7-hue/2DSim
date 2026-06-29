@@ -1,57 +1,45 @@
-import random
-from entities.herbivore import Herbivore
-from entities.plant import Plant
+from entities import Herbivore, Plant
+from entities.mobile_entity import MobileEntity
 
 
-class Predator:
-    t_predator = 10
-    r_predator_sight = 2
-    t_cooldown = 10
+class Predator(MobileEntity):
+    SIGN = "🐺"
+
+    t_predator = 0
+    r_predator_sight = 0
+    t_cooldown = 0
 
     def __init__(self, row, col):
-        self.age = 0
-        self.row = row
-        self.col = col
+        MobileEntity.__init__(self, row, col)
 
-    def increase_age(self):
-        self.age += 1
+    def print_entity(self):
+        print(Predator.SIGN, end="")
 
-    def find_nearest_herbivore(self, board: list):
-        """Finds the nearest herbivore within sight radius."""
-        for sight in range(1, self.r_predator_sight + 1):
-            for check_row in range(self.row - sight, self.row + sight + 1):
-                if 0 <= check_row < len(board):
-                    for check_col in range(self.col - sight, self.col + sight + 1):
-                        if 0 <= check_col < len(board[check_row]):
-                            entity = board[check_row][check_col]
+    def step(self, board: list):
+        """Implements predator functionality."""
+        self.increase_age()
 
-                            if isinstance(entity, Herbivore):
-                                return entity
-                                
-        return None
+        if self.is_dead(Predator.t_predator):
+            self.remove_from_board(board)
+        else:
 
-    def move_towards_herbivore(self, herbivore: Herbivore):
-        if herbivore.row > self.row:
-            self.row += 1
-        elif herbivore.row < self.row:
-            self.row -= 1
-        if herbivore.col > self.col:
-            self.col += 1
-        elif herbivore.col < self.col:
-            self.col -= 1
+            old_row, old_col = self.row, self.col
 
-    def is_dead(self):
-        return self.age >= self.t_predator
+            nearest_herbivore = self.find_nearest_needed_entity(board, Herbivore, Herbivore.r_herbivore_sight)
+            if nearest_herbivore is None:
+                self.move_randomly(board)
+            else:
+                self.move_towards_entity(nearest_herbivore)
 
-    def refuel_life_span(self):
-        """Refuel the life span of the predator"""
-        self.age = 0
+            self.move_entity_on_board(old_row, old_col, board)
 
-    def move_randomly(self, board: list):
-        """Move to a random neighboring cell."""
-        rows = len(board)
-        cols = len(board[0])
-        new_row = random.randrange(max(0, self.row - 1), min(rows, self.row + 2))
-        new_col = random.randrange(max(0, self.col - 1), min(cols, self.col + 2))
-        self.row = new_row
-        self.col = new_col
+            target = board[self.row][self.col]
+
+            if isinstance(target, Herbivore):
+                target.remove_from_board(board)
+                self.refuel_life_span()
+            elif isinstance(target, Plant):
+                target.remove_from_board(board)
+
+            board[self.row][self.col] = self
+
