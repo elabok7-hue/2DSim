@@ -5,14 +5,20 @@ from entities.mobile_entity import MobileEntity
 
 
 class Herbivore(MobileEntity):
+    SIGN = "🐔"
+
     t_herbivore = 10
     r_herbivore_sight = 2
     t_cooldown = 6
+
 
     def __init__(self, row, col):
         MobileEntity.__init__(self, row, col)
 
         self.reproduction_cooldown_timer = 0
+
+    def print_entity(self):
+        print(Herbivore.SIGN, end="")
 
     def can_reproduce(self):
         return self.reproduction_cooldown_timer == 0
@@ -20,8 +26,8 @@ class Herbivore(MobileEntity):
     def reproduce(self, board: list):
         """Try to spawn a new herbivore in a random empty neighboring cell."""
         self.reproduction_cooldown_timer = self.t_cooldown
-        rows = len(board)
-        cols = len(board[0])
+        num_of_rows = len(board)
+        num_of_cols = len(board[0])
 
         empty_cells = []
         for dr in range(-1, 2):
@@ -29,7 +35,7 @@ class Herbivore(MobileEntity):
                 if dr == 0 and dc == 0:
                     continue
                 nr, nc = self.row + dr, self.col + dc
-                if 0 <= nr < rows and 0 <= nc < cols and board[nr][nc] is None:
+                if 0 <= nr < num_of_rows and 0 <= nc < num_of_cols and board[nr][nc] is None:
                     empty_cells.append((nr, nc))
 
         if empty_cells:
@@ -39,7 +45,7 @@ class Herbivore(MobileEntity):
 
         return None
 
-    def herbivore_step(self, board: list):
+    def step(self, board: list):
         """Implements herbivore functionality."""
         self.increase_age()
 
@@ -58,7 +64,6 @@ class Herbivore(MobileEntity):
                     if baby:
                         board[baby.row][baby.col] = baby
 
-                    self.cooldown_timer = self.t_cooldown
                     partner.cooldown_timer = partner.t_cooldown
                     return
 
@@ -75,4 +80,3 @@ class Herbivore(MobileEntity):
                 target.remove_from_board(board)
                 self.refuel_life_span()
             board[self.row][self.col] = self
-

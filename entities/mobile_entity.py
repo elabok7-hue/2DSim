@@ -1,4 +1,5 @@
 import random
+import yaml
 
 from entities.entity import Entity
 
@@ -7,6 +8,12 @@ class MobileEntity(Entity):
 
     def __init__(self, row, col):
         Entity.__init__(self, row, col)
+
+    def print_entity(self):
+        pass
+
+    def step(self, board: list):
+        pass
 
     def find_nearest_needed_entity(self, board: list, needed_entity: type, sight: int):
         """Finds the nearest needed entity within sight radius."""
@@ -38,9 +45,9 @@ class MobileEntity(Entity):
 
     def move_randomly(self, board: list):
         """Move to a random neighboring cell."""
-        rows = len(board)
-        cols = len(board[0])
-        new_row = random.randrange(max(0, self.row - 1), min(rows, self.row + 2))
-        new_col = random.randrange(max(0, self.col - 1), min(cols, self.col + 2))
+        amount_of_rows = len(board)
+        amount_of_cols = len(board[0])
+        new_row = random.randrange(max(0, self.row - 1), min(amount_of_rows, self.row + 2))
+        new_col = random.randrange(max(0, self.col - 1), min(amount_of_cols, self.col + 2))
         self.row = new_row
         self.col = new_col

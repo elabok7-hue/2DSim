@@ -3,14 +3,19 @@ from entities.mobile_entity import MobileEntity
 
 
 class Predator(MobileEntity):
-    t_predator = 10
-    r_predator_sight = 2
-    t_cooldown = 10
+    SIGN = "🐺"
+
+    t_predator = 0
+    r_predator_sight = 0
+    t_cooldown = 0
 
     def __init__(self, row, col):
         MobileEntity.__init__(self, row, col)
 
-    def predator_step(self, board: list):
+    def print_entity(self):
+        print(Predator.SIGN, end="")
+
+    def step(self, board: list):
         """Implements predator functionality."""
         self.increase_age()
 

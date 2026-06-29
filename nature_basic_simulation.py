@@ -1,22 +1,25 @@
+"""nature_basic_simulation.py
+
+This module runs the nature simulation using the given entities"""
 import random
 import time
 import yaml
 
-from entities import Herbivore, Plant, Predator
+from entities import Herbivore, Plant, Predator, Rock, Ground
+from entities.mobile_entity import MobileEntity
 
-PLANT_SIGN = "🍀"
-HERBIVORE_SIGN = "🐔"
-PREDATOR_SIGN = "🐺"
-ROCK_SIGN = "🪨"
-GROUND_SIGN = "🟫"
-
+ENTITY_MAP = {
+    cls.SIGN: cls
+    for cls in [Plant, Herbivore, Predator, Rock, Ground]
+}
 
 def load_config():
-    with open("config.yaml", "r") as f:
+    """Loads the configuration from the config file"""
+    with open("config.yaml", "r", encoding="utf-8") as f:
         return yaml.load(f, Loader=yaml.SafeLoader)
 
 def apply_config(config):
-    """Insert yaml config values into entity class attributes."""
+    """Insert YAML config values into entity class attributes."""
     Plant.t_plant = config.get("T_plant", Plant.t_plant)
     Herbivore.t_herbivore = config.get("T_herbivore", Herbivore.t_herbivore)
     Herbivore.r_herbivore_sight = config.get("R_herbivore_sight", Herbivore.r_herbivore_sight)
@@ -26,33 +29,19 @@ def apply_config(config):
 
 
 def init_board():
-    """Initialize the board"""
     board = []
 
     with open("nature_board.txt", "r", encoding="utf-8") as file:
-        lines = file.readlines()
+        for row, line in enumerate(file):
+            board_row = []
 
-    for row, line in enumerate(lines):
-        line = line.strip()
-        board_row = []
-        col_index = 0
-        for cell in line:
-            if cell == PLANT_SIGN:
-                board_row.append(Plant(row, col_index))
-                col_index += 1
-            elif cell == HERBIVORE_SIGN:
-                board_row.append(Herbivore(row, col_index))
-                col_index += 1
-            elif cell == PREDATOR_SIGN:
-                board_row.append(Predator(row, col_index))
-                col_index += 1
-            elif cell == ROCK_SIGN:
-                board_row.append(ROCK_SIGN)
-                col_index += 1
-            elif cell == GROUND_SIGN:
-                board_row.append(None)
-                col_index += 1
-        board.append(board_row)
+            for col, symbol in enumerate(line.strip()):
+                entity_class = ENTITY_MAP.get(symbol)
+
+                if entity_class:
+                    board_row.append(entity_class(row, col))
+
+            board.append(board_row)
 
     return board
 
@@ -61,16 +50,7 @@ def print_board(board: list):
     """Prints the board."""
     for row in board:
         for cell in row:
-            if isinstance(cell, Plant):
-                print(PLANT_SIGN, end="")
-            elif isinstance(cell, Herbivore):
-                print(HERBIVORE_SIGN, end="")
-            elif isinstance(cell, Predator):
-                print(PREDATOR_SIGN, end="")
-            elif cell == ROCK_SIGN:
-                print(ROCK_SIGN, end="")
-            else:
-                print(GROUND_SIGN, end="")
+            cell.print_entity()
         print()
     print()
 
@@ -80,49 +60,40 @@ def spawn_random_plant(board : list):
 
     empty_cells = []
     for row_idx, row in enumerate(board):
-        for col_idx, col in enumerate(board[row_idx]):
-            if board[row_idx][col_idx] is None:
+        for col_idx, col in enumerate(row):
+            if col is None:
                 empty_cells.append((row_idx, col_idx))
     if empty_cells:
         r, c = random.choice(empty_cells)
         board[r][c] = Plant(r, c)
 
-
-def main():
-    config = load_config()
-    apply_config(config)
+def move_entities(board: list):
+    """Moves the entities on the board according to each of the entities rules."""
     num_steps = 10
-    board = init_board()
 
     for step in range(num_steps):
         print_board(board)
         entities_to_process = []
 
-        for row in range(len(board)):
-            for col in range(len(board[row])):
-                cell = board[row][col]
-                if isinstance(cell, (Plant, Herbivore, Predator)):
+        for row_idx, row in enumerate(board):
+            for col_idx, col in enumerate(row):
+                cell = col
+                if isinstance(cell, MobileEntity):
                     entities_to_process.append(cell)
 
         for entity in entities_to_process:
-            if isinstance(entity, Predator):
-                if board[entity.row][entity.col] is entity:
-                    entity.predator_step(board)
-
-        for entity in entities_to_process:
-            if isinstance(entity, Herbivore):
-                if board[entity.row][entity.col] is entity:
-                    entity.herbivore_step(board)
-
-        for entity in entities_to_process:
-            if isinstance(entity, Plant):
-                if board[entity.row][entity.col] is entity:
-                    entity.plant_step(board)
+             entity.step(board)
 
         spawn_random_plant(board)
         time.sleep(0.5)
-
     print_board(board)
+
+def main():
+    """Run the program"""
+    config = load_config()
+    apply_config(config)
+    board = init_board()
+    move_entities(board)
 
 
 if __name__ == "__main__":
