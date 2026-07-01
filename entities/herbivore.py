@@ -1,5 +1,6 @@
 import random
 
+from config import CONFIG
 from entities import Plant
 from entities.mobile_entity import MobileEntity
 
@@ -7,18 +8,15 @@ from entities.mobile_entity import MobileEntity
 class Herbivore(MobileEntity):
     SIGN = "🐔"
 
-    t_herbivore = 10
-    r_herbivore_sight = 2
-    t_cooldown = 6
+    t_herbivore = CONFIG["T_herbivore"]
+    r_herbivore_sight = CONFIG["R_herbivore_sight"]
+    t_cooldown = CONFIG["T_cooldown"]
 
 
     def __init__(self, row, col):
         MobileEntity.__init__(self, row, col)
 
         self.reproduction_cooldown_timer = 0
-
-    def print_entity(self):
-        print(Herbivore.SIGN, end="")
 
     def can_reproduce(self):
         return self.reproduction_cooldown_timer == 0
@@ -45,7 +43,7 @@ class Herbivore(MobileEntity):
 
         return None
 
-    def step(self, board: list):
+    def step(self, board: list, events=None):
         """Implements herbivore functionality."""
         self.increase_age()
 

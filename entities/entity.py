@@ -1,7 +1,5 @@
-from abc import abstractmethod, ABC
 
-
-class Entity(ABC):
+class Entity:
     SIGN = ""
 
     def __init__(self, row, col):
@@ -35,3 +33,12 @@ class Entity(ABC):
 
         if 0 <= self.row < len(board) and 0 <= self.col < len(board[0]):
             board[self.row][self.col] = self
+
+    def is_alive(self, board: list):
+        """Check if there are instances of the current entity on the board"""
+        for row_idx, row in enumerate(board):
+            for col_idx, col in enumerate(row):
+                if isinstance(col, type(self)):
+                    return True
+
+        return False

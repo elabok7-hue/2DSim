@@ -1,3 +1,4 @@
+from config import CONFIG
 from entities import Herbivore, Plant
 from entities.mobile_entity import MobileEntity
 
@@ -5,17 +6,15 @@ from entities.mobile_entity import MobileEntity
 class Predator(MobileEntity):
     SIGN = "🐺"
 
-    t_predator = 0
-    r_predator_sight = 0
-    t_cooldown = 0
+    t_predator = CONFIG["T_predator"]
+    r_predator_sight = CONFIG["R_predator_sight"]
+    t_cooldown = ["T_cooldown"]
 
     def __init__(self, row, col):
         MobileEntity.__init__(self, row, col)
 
-    def print_entity(self):
-        print(Predator.SIGN, end="")
 
-    def step(self, board: list):
+    def step(self, board: list, events=None):
         """Implements predator functionality."""
         self.increase_age()
 
@@ -38,8 +37,8 @@ class Predator(MobileEntity):
             if isinstance(target, Herbivore):
                 target.remove_from_board(board)
                 self.refuel_life_span()
+                events.notify("HERBIVORE_EATEN")
             elif isinstance(target, Plant):
                 target.remove_from_board(board)
 
             board[self.row][self.col] = self
-
