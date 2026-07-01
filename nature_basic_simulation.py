@@ -15,6 +15,7 @@ ENTITY_MAP = {
 }
 
 def init_board():
+    """Load the starting position of the board."""
     board = []
 
     with open("nature_board.txt", "r", encoding="utf-8") as file:
@@ -81,6 +82,7 @@ def check_entity_extinction(board: list, events, entity_types: list):
             events.notify("ENTITY_EXTINCT", {"entity": entity_type.__name__})
 
 def check_plant_overflow(board: list, events):
+    """Check if there are more than 90% plants"""
     plant_count = 0
     total_cells = 0
 
@@ -117,6 +119,7 @@ def move_entities(board: list, events):
     print_board(board)
 
 def subscribe_events():
+    """subscribe to events for them to be able to alert when needed"""
     events = EventManager()
 
     events.subscribe(
