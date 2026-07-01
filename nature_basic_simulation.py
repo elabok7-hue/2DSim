@@ -6,6 +6,7 @@ import time
 
 from alerts import PredatorEatHerbivoreAlert, DeadEntityAlert, ManyPlantsAlert, EventManager
 from entities import Herbivore, Plant, Predator, Rock, Ground
+from entities.entity import Entity
 from entities.mobile_entity import MobileEntity
 
 ENTITY_MAP = {
@@ -51,6 +52,18 @@ def spawn_random_plant(board : list):
     if empty_cells:
         r, c = random.choice(empty_cells)
         board[r][c] = Plant(r, c)
+
+def get_all_subclasses(base_class):
+    """Return all subclasses without recursion."""
+    subclasses = []
+    queue = list(base_class.__subclasses__())
+
+    while queue:
+        current = queue.pop(0)
+        subclasses.append(current)
+        queue.extend(current.__subclasses__())
+
+    return subclasses
 
 def check_entity_extinction(board: list, events, entity_types: list):
     """Check if the given entities are on the board.xg"""
@@ -98,7 +111,7 @@ def move_entities(board: list, events):
              entity.step(board, events)
 
         spawn_random_plant(board)
-        check_entity_extinction(board, events, [Herbivore, Predator, Plant])
+        check_entity_extinction(board, events, get_all_subclasses(Entity))
         check_plant_overflow(board, events)
         time.sleep(0.5)
     print_board(board)
