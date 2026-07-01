@@ -35,9 +35,12 @@ def init_board():
 
 def print_board(board: list):
     """Prints the board."""
-    for row in board:
-        for cell in row:
-            cell.print_entity()
+    for row_idx, row in enumerate(board):
+        for cell_idx, cell in enumerate(row):
+            if cell is None:
+                board[row_idx][cell_idx] = Ground(row_idx, cell_idx)
+            board[row_idx][cell_idx].print_entity()
+
         print()
     print()
 
