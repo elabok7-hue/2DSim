@@ -9,10 +9,8 @@ class MobileEntity(Entity):
     def __init__(self, row, col):
         Entity.__init__(self, row, col)
 
-    def print_entity(self):
-        pass
 
-    def step(self, board: list):
+    def step(self, board: list, events=None):
         pass
 
     def find_nearest_needed_entity(self, board: list, needed_entity: type, sight: int):

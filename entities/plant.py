@@ -1,15 +1,14 @@
+from config import CONFIG
 from entities.entity import Entity
 
 
 class Plant(Entity):
-    t_plant = 0
+    t_plant = CONFIG["T_plant"]
     SIGN = "🍀"
 
     def __init__(self, row, col):
         Entity.__init__(self, row, col)
 
-    def print_entity(self):
-        print(Plant.SIGN, end="")
 
     def step(self, board: list):
         """Implements plant functionality."""

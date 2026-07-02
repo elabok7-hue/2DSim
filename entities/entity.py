@@ -1,7 +1,5 @@
-from abc import abstractmethod, ABC
 
-
-class Entity(ABC):
+class Entity:
     SIGN = ""
 
     def __init__(self, row, col):
@@ -23,15 +21,21 @@ class Entity(ABC):
 
     def remove_from_board(self, board: list):
         """Remove an entity from the board."""
-        from entities.ground import Ground
-        board[self.row][self.col] = Ground(self.row, self.col)
+        board[self.row][self.col] = None
 
     def move_entity_on_board(self, old_row: int, old_col: int, board: list):
         """Update the board after an entity changed position."""
-        from entities.ground import Ground
-
         if board[old_row][old_col] is self:
-            board[old_row][old_col] = Ground(self.row, self.col)
+            board[old_row][old_col] = None
 
         if 0 <= self.row < len(board) and 0 <= self.col < len(board[0]):
             board[self.row][self.col] = self
+
+    def is_alive(self, board: list):
+        """Check if there are instances of the current entity on the board"""
+        for row_idx, row in enumerate(board):
+            for col_idx, col in enumerate(row):
+                if isinstance(col, type(self)):
+                    return True
+
+        return False
