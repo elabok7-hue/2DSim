@@ -1,15 +1,18 @@
-class Plant:
-    t_plant = 10
+from entities.entity import Entity
+
+
+class Plant(Entity):
+    t_plant = 0
+    SIGN = "🍀"
 
     def __init__(self, row, col):
-        self.age = 0
-        self.row = row
-        self.col = col
+        Entity.__init__(self, row, col)
 
-    def increase_age(self):
-        """Increase age"""
-        self.age += 1
+    def print_entity(self):
+        print(Plant.SIGN, end="")
 
-    def is_dead(self):
-        """Check if plant is dead"""
-        return self.age >= self.t_plant
+    def step(self, board: list):
+        """Implements plant functionality."""
+        self.increase_age()
+        if self.is_dead(Plant.t_plant):
+            self.remove_from_board(board)
